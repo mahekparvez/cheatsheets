@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CheatSheets – Purdue</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --surface: #f5f5f5;
+    --border: #111111;
+    --text: #111111;
+    --text-muted: #666666;
+    --accent: #111111;
+    --radius: 2px;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --font-sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── PAGE SYSTEM ── */
+  .page { display: none; min-height: 100vh; flex-direction: column; }
+  .page.active { display: flex; }
+
+  /* ── LAYOUT ── */
+  .shell {
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    min-height: 100vh;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 2px solid var(--border);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .topbar-title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 19px;
+    letter-spacing: -0.02em;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+  .topbar-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .topbar-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--border);
+    color: var(--bg);
+    padding: 2px 7px;
+    border-radius: 100px;
+  }
+
+  /* ── CONTENT ── */
+  .content { flex: 1; padding: 20px 18px; overflow-y: auto; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 20px;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition: background 0.12s, color 0.12s;
+  }
+  .btn:hover { background: var(--border); color: var(--bg); }
+  .btn-primary { background: var(--border); color: var(--bg); }
+  .btn-primary:hover { background: #333; }
+  .btn-sm { padding: 6px 12px; font-size: 11px; }
+  .btn-full { width: 100%; }
+
+  /* ── INPUTS ── */
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    color: var(--text-muted);
+  }
+  .field input, .field select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--text);
+    border-radius: var(--radius);
+    outline: none;
+    transition: border-color 0.12s;
+  }
+  .field input:focus, .field select:focus { border-color: #555; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #ddd;
+  }
+
+  /* ── COURSE GRID ── */
+  .subject-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    margin-top: 22px;
+  }
+  .subject-label:first-of-type { margin-top: 0; }
+
+  .course-row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .course-row::-webkit-scrollbar { display: none; }
+
+  .course-card {
+    flex: 0 0 90px;
+    width: 90px;
+    height: 90px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    cursor: pointer;
+    transition: background 0.12s;
+    background: var(--bg);
+    padding: 10px 6px;
+    text-align: center;
+  }
+  .course-card-name {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 5px;
+  }
+  .course-card-tag {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    line-height: 1.3;
+  }
+  .course-card:hover { background: var(--surface); }
+  .badge-exam {
+    background: var(--border);
+    color: var(--bg);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 5px;
+    border-radius: var(--radius);
+    letter-spacing: 0.05em;
+    position: absolute;
+    top: -8px;
+    right: -6px;
+  }
+  .course-card-wrap { position: relative; }
+
+  /* ── ADD CARD TOOLTIP ── */
+  .add-card-wrap {
+    position: relative;
+    display: inline-block;
+  }
+  .add-card-wrap .add-tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--border);
+    color: var(--bg);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    white-space: nowrap;
+    padding: 5px 9px;
+    border-radius: 2px;
+    z-index: 20;
+    pointer-events: none;
+  }
+  .add-card-wrap .add-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%; left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--border);
+  }
+  .add-card-wrap:hover .add-tooltip { display: block; }
+
+  /* ── CHEATSHEET GRID ── */
+  .sheet-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .sheet-card {
+    aspect-ratio: 3/4;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 8px;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.12s;
+  }
+  .sheet-card:hover { background: #eaeaea; }
+  .sheet-card-lines {
+    position: absolute;
+    top: 10px; left: 10px; right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .sheet-card-line {
+    height: 1px;
+    background: #ccc;
+    border-radius: 1px;
+  }
+  .sheet-card-name {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    text-align: center;
+    z-index: 1;
+  }
+  .sheet-card-bookmark {
+    position: absolute;
+    top: 0; right: 12px;
+    width: 12px;
+    height: 20px;
+    background: var(--border);
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+
+  /* ── CHEATSHEET DETAIL ── */
+  .sheet-preview {
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    height: 220px;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    cursor: zoom-in;
+    position: relative;
+    overflow: hidden;
+  }
+  .sheet-preview-lines {
+    position: absolute;
+    top: 16px; left: 16px; right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .sheet-preview-line { height: 1px; background: #ccc; }
+  .sheet-expand-hint {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    z-index: 1;
+    background: rgba(255,255,255,0.9);
+    padding: 4px 10px;
+    border: 1px solid #ddd;
+    border-radius: var(--radius);
+  }
+
+  .stars { display: flex; gap: 4px; margin: 4px 0; }
+  .star {
+    font-size: 20px;
+    cursor: pointer;
+    color: #ccc;
+    transition: color 0.1s;
+    line-height: 1;
+  }
+  .star.filled { color: var(--border); }
+
+  .comments-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .comment-item {
+    border: 1px solid #ccc;
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    background: #cccccc;
+  }
+  .comment-author-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 4px;
+  }
+  .comment-author {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: #111;
+  }
+  .comment-dot {
+    font-size: 13px;
+    color: #555;
+    line-height: 1;
+  }
+  .comment-stars {
+    font-size: 11px;
+    color: #111;
+    letter-spacing: 1px;
+  }
+  .comment-text { font-size: 13px; line-height: 1.4; color: #111; }
+
+  .info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .info-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .points-badge {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .points-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-decoration: line-through;
+  }
+
+  /* ── SETTINGS ── */
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-label {
+    font-family: var(--font-sans);
+    font-size: 15px;
+  }
+  .toggle {
+    width: 44px; height: 24px;
+    background: #ddd;
+    border-radius: 100px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .toggle.on { background: var(--border); }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 18px; height: 18px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+  .toggle.on::after { transform: translateX(20px); }
+
+  .settings-section-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    margin-top: 22px;
+  }
+  .settings-section-title:first-of-type { margin-top: 0; }
+
+  /* ── AUTH PAGES ── */
+  .auth-logo {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    margin-bottom: 32px;
+    text-align: center;
+    padding-top: 48px;
+  }
+  .auth-tagline {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: -24px;
+    margin-bottom: 32px;
+  }
+  .sso-btn {
+    width: 100%;
+    padding: 11px;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.12s;
+    margin-bottom: 4px;
+  }
+  .sso-btn:hover { background: var(--surface); }
+  .sso-icon { font-size: 16px; }
+
+  .link-btn {
+    background: none;
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+    color: var(--text);
+    padding: 0;
+  }
+  .link-btn:hover { color: #555; }
+
+  .auth-footer {
+    text-align: center;
+    padding: 20px 0 32px;
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+
+  /* ── SCROLL HINT ── */
+  .scroll-hint {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-left: 4px;
+  }
+
+  /* ── GRADUATION PICKER ── */
+  .year-scroll {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .year-option {
+    padding: 8px 12px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    cursor: pointer;
+    border-bottom: 1px solid #e0e0e0;
+    transition: background 0.1s;
+  }
+  .year-option:last-child { border-bottom: none; }
+  .year-option:hover { background: var(--surface); }
+  .year-option.selected { background: var(--border); color: var(--bg); }
+
+  /* ── RESPONSIVE: MOBILE BASE (already designed for ~480px) ── */
+  @media (max-width: 480px) {
+    .shell {
+      border-left: none;
+      border-right: none;
+      max-width: 100%;
+    }
+    .course-card {
+      flex: 0 0 80px;
+      width: 80px;
+      height: 80px;
+    }
+    .topbar-title { font-size: 17px; }
+    .auth-logo { font-size: 20px; }
+  }
+
+  /* ── RESPONSIVE: TABLET / SMALL LAPTOP (768px–1100px) ── */
+  @media (min-width: 768px) {
+    .shell {
+      max-width: 600px;
+    }
+    .course-card {
+      flex: 0 0 110px;
+      width: 110px;
+      height: 110px;
+    }
+    .course-card-name { font-size: 13px; }
+    .course-card-tag  { font-size: 10px; }
+    .sheet-grid { grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .content { padding: 24px 24px; }
+    .topbar { padding: 16px 24px; }
+    .topbar-title { font-size: 20px; }
+    .auth-logo { font-size: 26px; padding-top: 60px; }
+  }
+
+  /* ── RESPONSIVE: LAPTOP / DESKTOP (1100px+) ── */
+  @media (min-width: 1100px) {
+    body { background: var(--surface); }
+
+    .page {
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 40px 0;
+    }
+
+    .shell {
+      max-width: 520px;
+      min-height: calc(100vh - 80px);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.10);
+    }
+
+    /* On desktop the bottom nav can stay sticky within the shell */
+  .topbar {
+      border-radius: 6px 6px 0 0;
+    }
+
+    .course-card {
+      flex: 0 0 105px;
+      width: 105px;
+      height: 105px;
+    }
+    .course-card-name { font-size: 12px; }
+    .course-card-tag  { font-size: 10px; }
+
+    .sheet-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+    .sheet-preview { height: 260px; }
+
+    .auth-logo { padding-top: 56px; font-size: 24px; }
+    .field input, .field select { font-size: 15px; }
+
+    /* Wider form fields on login/signup */
+    .btn-full { padding: 12px 20px; font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     LOGIN PAGE
+══════════════════════════════════════ -->
+<div class="page active" id="page-login">
+  <div class="shell">
+    <div class="content">
+      <div class="auth-logo">cheatsheets.</div>
+      <div class="auth-tagline">for Purdue students</div>
+
+      <div class="field">
+        <label>Purdue Email</label>
+        <input type="email" placeholder="username@purdue.edu">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" placeholder="••••••••">
+      </div>
+      <button class="btn btn-primary btn-full" onclick="go('courses')">Log In</button>
+
+      <div class="divider">or</div>
+
+      <button class="sso-btn" onclick="go('courses')">
+        <span class="sso-icon">🔐</span> Continue with Purdue SSO
+      </button>
+
+    </div>
+    <div class="auth-footer">
+      No account? <button class="link-btn" onclick="go('signup')">Sign up</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SIGNUP PAGE
+══════════════════════════════════════ -->
+<div class="page" id="page-signup">
+  <div class="shell">
+    <div class="content">
+      <div class="auth-logo">cheatsheets.</div>
+      <div class="auth-tagline">create your account</div>
+
+      <div class="field">
+        <label>First Name</label>
+        <input type="text" placeholder="First">
+      </div>
+      <div class="field">
+        <label>Last Name</label>
+        <input type="text" placeholder="Last">
+      </div>
+      <div class="field">
+        <label>Purdue Email</label>
+        <input type="email" placeholder="username@purdue.edu">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" placeholder="••••••••">
+      </div>
+      <div class="field">
+        <label>Graduation Year</label>
+        <div class="year-scroll" id="yearPicker">
+          <div class="year-option" onclick="pickYear(this)">2025</div>
+          <div class="year-option selected" onclick="pickYear(this)">2026</div>
+          <div class="year-option" onclick="pickYear(this)">2027</div>
+          <div class="year-option" onclick="pickYear(this)">2028</div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="go('courses')" style="margin-top:4px">Create Account</button>
+    </div>
+    <div class="auth-footer">
+      Have an account? <button class="link-btn" onclick="go('login')">Log in</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     COURSES PAGE
+══════════════════════════════════════ -->
+<div class="page" id="page-courses">
+  <div class="shell">
+    <div class="topbar">
+      <span></span>
+      <span class="topbar-title">courses</span>
+      <button class="topbar-icon" onclick="go('settings')">⚙️</button>
+    </div>
+    <div class="content">
+
+      <div class="subject-label">ECE</div>
+      <div class="course-row">
+        <div class="course-card" onclick="openCourse('ECE 20001', 'Elect. Eng.')">
+          <div class="course-card-name">ECE 20001</div>
+          <div class="course-card-tag">Elect. Eng.</div>
+        </div>
+        <div class="course-card" onclick="openCourse('ECE 20875', 'Python for DS')">
+          <div class="course-card-name">ECE 20875</div>
+          <div class="course-card-tag">Python for DS</div>
+        </div>
+        <div class="add-card-wrap">
+          <div class="add-tooltip">Request another class' cheatsheets!</div>
+          <div class="course-card" style="border-style:dashed; color:#aaa">
+            <div class="course-card-name" style="color:#aaa">+ add</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subject-label">Math</div>
+      <div class="course-row">
+        <div class="course-card" onclick="openCourse('MA 161', 'Calculus I')">
+          <div class="course-card-name">MA 161</div>
+          <div class="course-card-tag">Calculus I</div>
+        </div>
+        <div class="course-card" onclick="openCourse('MA 162', 'Calculus II')">
+          <div class="course-card-name">MA 162</div>
+          <div class="course-card-tag">Calculus II</div>
+        </div>
+        <div class="course-card" onclick="openCourse('MA 261', 'Multivariate Calc.')">
+          <div class="course-card-name">MA 261</div>
+          <div class="course-card-tag">Multivariate Calc.</div>
+        </div>
+        <div class="add-card-wrap">
+          <div class="add-tooltip">Request another class' cheatsheets!</div>
+          <div class="course-card" style="border-style:dashed; color:#aaa">
+            <div class="course-card-name" style="color:#aaa">+ add</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subject-label">FYE</div>
+      <div class="course-row">
+        <div class="course-card" onclick="openCourse('PHY 172', 'Modern Mechanics')">
+          <div class="course-card-name">PHY 172</div>
+          <div class="course-card-tag">Modern Mechanics</div>
+        </div>
+        <div class="add-card-wrap">
+          <div class="add-tooltip">Request another class' cheatsheets!</div>
+          <div class="course-card" style="border-style:dashed; color:#aaa">
+            <div class="course-card-name" style="color:#aaa">+ add</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CHEATSHEETS PAGE (dynamic)
+══════════════════════════════════════ -->
+<div class="page" id="page-cheatsheets">
+  <div class="shell">
+
+    <!-- Topbar: back arrow + "catalog" title -->
+    <div class="topbar">
+      <button class="topbar-icon" onclick="go('courses')" style="font-size:15px;gap:0">←</button>
+      <span class="topbar-title">catalog</span>
+      <span></span>
+    </div>
+
+    <!-- Search box -->
+    <div style="padding:12px 18px 0;position:relative;">
+      <input
+        id="catalog-search"
+        type="text"
+        placeholder="Search courses or exams…"
+        oninput="handleCatalogSearch()"
+        onfocus="handleCatalogSearch()"
+        onblur="setTimeout(()=>document.getElementById('search-dropdown').style.display='none',200)"
+        style="width:100%;padding:9px 12px 9px 32px;border:2px solid var(--border);background:var(--bg);font-family:var(--font-mono);font-size:12px;border-radius:2px;outline:none;color:var(--text);"
+      >
+      <!-- search icon -->
+      <span style="position:absolute;left:26px;top:50%;transform:translateY(-50%);pointer-events:none;display:flex;align-items:center;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
+        </svg>
+      </span>
+      <!-- dropdown -->
+      <div id="search-dropdown" style="display:none;position:absolute;left:18px;right:18px;top:calc(100% + 2px);background:var(--bg);border:2px solid var(--border);border-radius:2px;z-index:30;max-height:260px;overflow-y:auto;"></div>
+    </div>
+
+    <!-- Course code + dropdown on same horizontal line -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;margin-top:5px;">
+      <span id="sheets-course-title" style="font-family:var(--font-mono);font-size:15px;font-weight:600;letter-spacing:-0.01em;"></span>
+      <select id="exam-filter" onchange="filterSheets()" style="font-family:var(--font-mono);font-size:11px;font-weight:500;border:2px solid var(--border);background:var(--bg);color:var(--text);padding:5px 8px;border-radius:2px;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22><path d=%22M0 0l5 6 5-6z%22 fill=%22%23111%22/></svg>');background-repeat:no-repeat;background-position:right 7px center;padding-right:22px;">
+        <option value="all">All Exams</option>
+      </select>
+    </div>
+
+    <div class="content" style="padding-top:4px;">
+      <div id="sheets-grid-container"></div>
+
+      <!-- Resource links section -->
+      <div id="resource-links-section" style="display:none;margin-top:8px;">
+        <div style="font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;">Advised Resources</div>
+        <div id="resource-links-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+    </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CHEATSHEET DETAIL PAGE
+══════════════════════════════════════ -->
+<div class="page" id="page-detail">
+  <div class="shell">
+    <div class="topbar">
+      <button class="topbar-icon" onclick="go('cheatsheets')" style="font-size:15px">← back</button>
+      <span class="topbar-title" id="detail-title">cheatsheet #1</span>
+      <span></span>
+    </div>
+    <div class="content">
+
+      <div class="sheet-preview">
+        <div class="sheet-preview-lines">
+          <div class="sheet-preview-line"></div><div class="sheet-preview-line"></div>
+          <div class="sheet-preview-line"></div><div class="sheet-preview-line"></div>
+          <div class="sheet-preview-line"></div><div class="sheet-preview-line"></div>
+          <div class="sheet-preview-line"></div><div class="sheet-preview-line"></div>
+          <div class="sheet-preview-line"></div><div class="sheet-preview-line"></div>
+        </div>
+        <div class="sheet-expand-hint">tap to expand / view</div>
+      </div>
+
+      <!-- Info row: course/uploader left, download right -->
+      <div class="info-row" style="margin-top:14px">
+        <div>
+          <div class="info-meta" id="detail-course-meta">ECE 20001 — Exam 1</div>
+          <div class="info-meta" id="detail-uploader-meta">uploaded by boiler_student</div>
+        </div>
+        <button class="btn btn-sm" onclick="handleDownload()" style="display:flex;align-items:center;gap:5px;font-size:11px;">
+          ↓ Download
+        </button>
+      </div>
+
+      <!-- Rating: label + avg on same line, stars below -->
+      <div style="margin-top:14px;margin-bottom:6px;">
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;">
+          <div style="font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Rating</div>
+          <div id="avg-rating-display" style="font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--text);">4.0 ★</div>
+        </div>
+        <div style="position:relative;display:inline-block;">
+          <div class="stars" id="stars">
+            <span class="star" onclick="rate(1)">★</span>
+            <span class="star" onclick="rate(2)">★</span>
+            <span class="star" onclick="rate(3)">★</span>
+            <span class="star" onclick="rate(4)">★</span>
+            <span class="star" onclick="rate(5)">★</span>
+          </div>
+          <div id="rating-prompt" style="display:none;position:absolute;left:0;top:-30px;background:var(--border);color:var(--bg);font-family:var(--font-mono);font-size:10px;padding:4px 8px;border-radius:2px;white-space:nowrap;z-index:10;">
+            Rate before commenting!
+            <div style="position:absolute;bottom:-5px;left:12px;border:5px solid transparent;border-top-color:var(--border);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comments -->
+      <div style="font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:10px;margin-top:16px;">Comments</div>
+      <div class="comments-list" id="commentsList">
+        <div class="comment-item">
+          <div class="comment-author-row">
+            <span class="comment-author">boiler2026</span>
+            <span class="comment-dot">·</span>
+            <span class="comment-stars">★★★★★</span>
+          </div>
+          <div class="comment-text">Super helpful for the inheritance section, saved me so much time!</div>
+        </div>
+        <div class="comment-item">
+          <div class="comment-author-row">
+            <span class="comment-author">cs_hammer</span>
+            <span class="comment-dot">·</span>
+            <span class="comment-stars">★★★☆☆</span>
+          </div>
+          <div class="comment-text">Missing some stuff on generics but overall solid.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:32px">
+        <input type="text" id="commentInput" placeholder="Add a comment..." style="flex:1;padding:9px 12px;border:2px solid var(--border);background:#d4d4d4;font-family:var(--font-sans);font-size:13px;border-radius:2px;outline:none;color:#111;">
+        <button class="btn btn-primary btn-sm" onclick="addComment()">Add +</button>
+      </div>
+
+    </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SETTINGS PAGE
+══════════════════════════════════════ -->
+<div class="page" id="page-settings">
+  <div class="shell">
+    <div class="topbar">
+      <button class="topbar-icon" onclick="go('courses')" style="font-size:15px">← back</button>
+      <span class="topbar-title">settings</span>
+      <span></span>
+    </div>
+    <div class="content">
+
+      <div class="settings-section-title">Appearance</div>
+      <div class="settings-row">
+        <span class="settings-label">Dark mode</span>
+        <div class="toggle" id="darkToggle" onclick="toggleDark()"></div>
+      </div>
+
+      <div class="settings-section-title" style="margin-top:28px">Account</div>
+      <div class="settings-row">
+        <span class="settings-label">Email</span>
+        <span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">user@purdue.edu</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Graduation year</span>
+        <span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">2026</span>
+      </div>
+      <div class="settings-row" style="border-bottom:none;padding-top:28px">
+        <button class="btn" onclick="go('login')" style="width:100%;border-color:#ccc;color:#888">Sign out</button>
+      </div>
+
+    </div>
+</div>
+</div>
+
+<script>
+  // ── Course data ──────────────────────────────────────────────────────────
+  const courseData = {
+    "ECE 20001": {
+      exams: ["Exam 1", "Exam 2", "Exam 3", "Final"],
+      sheets: [
+        { exam: "Exam 1", name: "cheatsheet #1", lines: 5, uploader: "volt_master" },
+        { exam: "Exam 1", name: "cheatsheet #2", lines: 4, uploader: "ece_grinder" },
+        { exam: "Exam 1", name: "cheatsheet #3", lines: 3, uploader: "boilermaker99" },
+        { exam: "Exam 2", name: "cheatsheet #1", lines: 4, uploader: "volt_master" },
+        { exam: "Exam 2", name: "cheatsheet #2", lines: 5, uploader: "circuits_gal" },
+        { exam: "Exam 3", name: "cheatsheet #1", lines: 3, uploader: "ece_grinder" },
+        { exam: "Final",  name: "cheatsheet #1", lines: 6, uploader: "volt_master" },
+        { exam: "Final",  name: "cheatsheet #2", lines: 4, uploader: "boilermaker99" },
+      ]
+    },
+    "ECE 20875": {
+      exams: ["Exam 1", "Exam 2", "Final"],
+      sheets: [
+        { exam: "Exam 1", name: "cheatsheet #1", lines: 4, uploader: "py_pete" },
+        { exam: "Exam 1", name: "cheatsheet #2", lines: 3, uploader: "data_dawg" },
+        { exam: "Exam 2", name: "cheatsheet #1", lines: 5, uploader: "py_pete" },
+        { exam: "Final",  name: "cheatsheet #1", lines: 4, uploader: "data_dawg" },
+      ]
+    },
+    "MA 161": {
+      exams: ["Exam 1", "Exam 2", "Final"],
+      sheets: [
+        { exam: "Exam 1", name: "cheatsheet #1", lines: 5, uploader: "calc_king" },
+        { exam: "Exam 2", name: "cheatsheet #1", lines: 3, uploader: "integral_irl" },
+        { exam: "Final",  name: "cheatsheet #1", lines: 6, uploader: "calc_king" },
+        { exam: "Final",  name: "cheatsheet #2", lines: 4, uploader: "math_nerd42" },
+      ]
+    },
+    "MA 162": {
+      exams: ["Exam 1", "Exam 2", "Final"],
+      sheets: [
+        { exam: "Exam 1", name: "cheatsheet #1", lines: 4, uploader: "integral_irl" },
+        { exam: "Exam 2", name: "cheatsheet #1", lines: 5, uploader: "calc_king" },
+        { exam: "Final",  name: "cheatsheet #1", lines: 3, uploader: "math_nerd42" },
+      ]
+    },
+    "MA 261": {
+      exams: ["Exam 1", "Exam 2", "Final"],
+      sheets: [
+        { exam: "Exam 1", name: "cheatsheet #1", lines: 4, uploader: "math_nerd42" },
+        { exam: "Exam 2", name: "cheatsheet #1", lines: 3, uploader: "calc_king" },
+        { exam: "Final",  name: "cheatsheet #1", lines: 5, uploader: "integral_irl" },
+      ]
+    },
+    "PHY 172": {
+      exams: ["Exam 1", "Exam 2", "Exam 3", "Final"],
+      sheets: [
+        { exam: "Exam 1", name: "cheatsheet #1", lines: 5, uploader: "physguy" },
+        { exam: "Exam 2", name: "cheatsheet #1", lines: 4, uploader: "quantum_q" },
+        { exam: "Exam 3", name: "cheatsheet #1", lines: 3, uploader: "physguy" },
+        { exam: "Final",  name: "cheatsheet #1", lines: 6, uploader: "quantum_q" },
+      ]
+    }
+  };
+
+  let activeCourse = null;
+
+  function sheetCardHTML(sheet) {
+    const lines = Array(sheet.lines).fill('<div class="sheet-card-line"></div>').join('');
+    const safeExam = sheet.exam.replace(/'/g, "\\'");
+    const safeName = sheet.name.replace(/'/g, "\\'");
+    const safeUploader = (sheet.uploader || 'unknown').replace(/'/g, "\\'");
+    return `
+      <div class="sheet-card" onclick="openDetail('${safeExam}', '${safeName}', '${safeUploader}')">
+        <div class="sheet-card-lines">${lines}</div>
+        <div class="sheet-card-bookmark"></div>
+        <div class="sheet-card-name">${sheet.name}</div>
+      </div>`;
+  }
+
+  function renderSheets(courseCode, examFilter) {
+    const data = courseData[courseCode];
+    if (!data) return;
+    const container = document.getElementById('sheets-grid-container');
+    const filtered = examFilter === 'all'
+      ? data.sheets
+      : data.sheets.filter(s => s.exam === examFilter);
+
+    if (filtered.length === 0) {
+      container.innerHTML = '<div style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted);margin-top:24px;text-align:center">No cheatsheets for this exam yet.</div>';
+      return;
+    }
+
+    if (examFilter === 'all') {
+      // Group by exam
+      const grouped = {};
+      data.exams.forEach(e => { grouped[e] = []; });
+      filtered.forEach(s => { if (grouped[s.exam]) grouped[s.exam].push(s); });
+      let html = '';
+      let first = true;
+      data.exams.forEach(exam => {
+        if (grouped[exam].length === 0) return;
+        html += `<div class="section-label" style="margin-top:${first ? '0' : '12px'};margin-bottom:12px">${exam}</div>`;
+        html += '<div class="sheet-grid">';
+        grouped[exam].forEach(s => { html += sheetCardHTML(s); });
+        html += '</div>';
+        first = false;
+      });
+      container.innerHTML = html;
+    } else {
+      let html = '<div class="sheet-grid">';
+      filtered.forEach(s => { html += sheetCardHTML(s); });
+      html += '</div>';
+      container.innerHTML = html;
+    }
+  }
+
+  function filterSheets() {
+    const val = document.getElementById('exam-filter').value;
+    renderSheets(activeCourse, val);
+  }
+
+  function openCourse(courseCode, subtitle) {
+    activeCourse = courseCode;
+    // Set title
+    document.getElementById('sheets-course-title').textContent = courseCode;
+    // Reset filter
+    const sel = document.getElementById('exam-filter');
+    sel.value = 'all';
+    // Populate exam options
+    const data = courseData[courseCode];
+    sel.innerHTML = '<option value="all">All Exams</option>';
+    if (data) {
+      data.exams.forEach(e => {
+        const opt = document.createElement('option');
+        opt.value = e; opt.textContent = e;
+        sel.appendChild(opt);
+      });
+    }
+    // Render sheets
+    renderSheets(courseCode, 'all');
+    showResourceLinks(courseCode, 'all');
+    go('cheatsheets');
+  }
+
+  function go(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + pageId).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function pickYear(el) {
+    document.querySelectorAll('.year-option').forEach(y => y.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  let currentRating = 0;
+  // Per-sheet comment/rating stores keyed by "course|exam|name"
+  const sheetComments = {};
+  const sheetRatings  = {};
+  let activeDetailKey = '';
+
+  function openDetail(exam, name, uploader) {
+    activeDetailKey = activeCourse + '|' + exam + '|' + name;
+    // Update topbar title
+    document.getElementById('detail-title').textContent = name;
+    // Update meta
+    document.getElementById('detail-course-meta').textContent = activeCourse + ' — ' + exam;
+    document.getElementById('detail-uploader-meta').textContent = 'uploaded by ' + uploader;
+    // Reset user rating stars
+    currentRating = 0;
+    window._ratingOnlySubmitted = false;
+    updateStarDisplay();
+    // Load stored comments for this sheet
+    loadComments();
+    // Update avg rating display
+    updateAvgRating();
+    go('detail');
+  }
+
+  function handleDownload() {
+    alert('Download coming soon! The cheatsheet PDF will be available here.');
+  }
+
+  function updateStarDisplay() {
+    document.querySelectorAll('#stars .star').forEach((s, i) => {
+      s.classList.toggle('filled', i < currentRating);
+    });
+  }
+
+  function rate(n) {
+    // If they previously submitted a rating-only for this sheet, remove it first
+    if (currentRating === 0 && sheetRatings[activeDetailKey]) {
+      // no previous rating-only entry to remove yet
+    }
+    currentRating = n;
+    updateStarDisplay();
+    // Hide the prompt once they rate
+    document.getElementById('rating-prompt').style.display = 'none';
+    // Record the rating immediately (rating-only, no comment)
+    if (!sheetRatings[activeDetailKey]) sheetRatings[activeDetailKey] = [4];
+    // Remove any prior rating-only entry from this session (tracked by ratingOnlySubmitted flag)
+    if (window._ratingOnlySubmitted) {
+      sheetRatings[activeDetailKey].pop();
+    }
+    sheetRatings[activeDetailKey].push(currentRating);
+    window._ratingOnlySubmitted = true;
+    updateAvgRating();
+  }
+
+  function updateAvgRating() {
+    const ratings = sheetRatings[activeDetailKey] || [4, 3]; // default seed ratings
+    const avg = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+    document.getElementById('avg-rating-display').textContent = avg.toFixed(1) + ' ★';
+  }
+
+  function loadComments() {
+    const list = document.getElementById('commentsList');
+    // Seed comments per sheet key if not yet set
+    if (!sheetComments[activeDetailKey]) {
+      if (activeDetailKey.includes('ECE 20001')) {
+        sheetComments[activeDetailKey] = [
+          { author: 'boiler2026', stars: 5, text: 'Super helpful, saved me so much time!' },
+          { author: 'cs_hammer',  stars: 3, text: 'Missing some content but overall solid.' },
+        ];
+        sheetRatings[activeDetailKey] = [5, 3];
+      } else {
+        sheetComments[activeDetailKey] = [];
+        sheetRatings[activeDetailKey] = [4];
+      }
+    }
+    renderComments();
+  }
+
+  function renderComments() {
+    const list = document.getElementById('commentsList');
+    const comments = sheetComments[activeDetailKey] || [];
+    list.innerHTML = comments.map(c => {
+      const filledStars = '★'.repeat(c.stars) + '☆'.repeat(5 - c.stars);
+      return `<div class="comment-item">
+        <div class="comment-author-row">
+          <span class="comment-author">${c.author}</span>
+          <span class="comment-dot">·</span>
+          <span class="comment-stars">${filledStars}</span>
+        </div>
+        <div class="comment-text">${c.text}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function addComment() {
+    const input = document.getElementById('commentInput');
+    const val = input.value.trim();
+    if (!val) return;
+    // Must have a rating
+    if (currentRating === 0) {
+      const prompt = document.getElementById('rating-prompt');
+      prompt.style.display = 'block';
+      setTimeout(() => { prompt.style.display = 'none'; }, 3000);
+      return;
+    }
+    if (!sheetComments[activeDetailKey]) sheetComments[activeDetailKey] = [];
+    if (!sheetRatings[activeDetailKey])  sheetRatings[activeDetailKey]  = [];
+    sheetComments[activeDetailKey].push({ author: 'you', stars: currentRating, text: val });
+    // Rating was already recorded when they clicked the stars — don't double-count
+    if (!window._ratingOnlySubmitted) {
+      sheetRatings[activeDetailKey].push(currentRating);
+    }
+    window._ratingOnlySubmitted = false; // consumed by comment
+    input.value = '';
+    currentRating = 0;
+    updateStarDisplay();
+    renderComments();
+    updateAvgRating();
+  }
+
+  // ── Resource links per course + exam ─────────────────────────────────────
+  const resourceLinks = {
+    "ECE 20001": {
+      "all":    [
+        { label: "ECE 20001 Course Page – Purdue", url: "https://engineering.purdue.edu/ECE/Academics/Undergraduates/UGO/CourseInfo/courseInfo?courseid=69&show=true&type=undergrad" },
+        { label: "Purdue ECE Study Resources", url: "https://www.purdue.edu/registrar/currentStudents/students/transfer/ece.html" },
+        { label: "Khan Academy – Circuits", url: "https://www.khanacademy.org/science/electrical-engineering" },
+        { label: "All About Circuits", url: "https://www.allaboutcircuits.com/textbook/" },
+      ],
+      "Exam 1": [
+        { label: "Kirchhoff's Laws – Khan Academy", url: "https://www.khanacademy.org/science/electrical-engineering/ee-circuit-analysis-topic" },
+        { label: "Ohm's Law Practice Problems", url: "https://www.allaboutcircuits.com/worksheets/ohms-law/" },
+        { label: "DC Circuit Analysis – MIT OpenCourseWare", url: "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/" },
+      ],
+      "Exam 2": [
+        { label: "Thevenin & Norton Theorems – Purdue Notes", url: "https://engineering.purdue.edu/ECE" },
+        { label: "AC Circuit Analysis – All About Circuits", url: "https://www.allaboutcircuits.com/textbook/alternating-current/" },
+        { label: "Phasors & Impedance – Khan Academy", url: "https://www.khanacademy.org/science/electrical-engineering/ee-circuit-analysis-topic/ee-ac-analysis/a/ee-phasors" },
+      ],
+      "Exam 3": [
+        { label: "Op-Amp Fundamentals – Texas Instruments", url: "https://www.ti.com/lit/an/sloa011/sloa011.pdf" },
+        { label: "Frequency Response – MIT OCW", url: "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/pages/readings/" },
+      ],
+      "Final": [
+        { label: "ECE 20001 Full Review – Purdue ECE", url: "https://engineering.purdue.edu/ECE" },
+        { label: "Circuits Complete Guide – All About Circuits", url: "https://www.allaboutcircuits.com/textbook/" },
+        { label: "MIT OCW 6.002 Lecture Notes", url: "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/pages/lecture-notes/" },
+      ],
+    },
+    "ECE 20875": {
+      "all":    [
+        { label: "ECE 20875 – Python for DS Course Info", url: "https://engineering.purdue.edu/ECE" },
+        { label: "Python Official Docs", url: "https://docs.python.org/3/" },
+        { label: "NumPy Quickstart", url: "https://numpy.org/doc/stable/user/quickstart.html" },
+        { label: "Pandas Getting Started", url: "https://pandas.pydata.org/docs/getting_started/intro_tutorials/" },
+      ],
+      "Exam 1": [
+        { label: "Python Basics – W3Schools", url: "https://www.w3schools.com/python/" },
+        { label: "List Comprehensions – Real Python", url: "https://realpython.com/list-comprehension-python/" },
+        { label: "Functions & Scope – Python Docs", url: "https://docs.python.org/3/tutorial/controlflow.html#defining-functions" },
+      ],
+      "Exam 2": [
+        { label: "NumPy for Beginners", url: "https://numpy.org/doc/stable/user/absolute_beginners.html" },
+        { label: "Pandas DataFrame Tutorial", url: "https://pandas.pydata.org/docs/getting_started/intro_tutorials/01_table_oriented.html" },
+        { label: "Matplotlib Cheatsheet", url: "https://matplotlib.org/cheatsheets/" },
+      ],
+      "Final": [
+        { label: "Scikit-learn Intro", url: "https://scikit-learn.org/stable/getting_started.html" },
+        { label: "Data Science Handbook – Jake VanderPlas", url: "https://jakevdp.github.io/PythonDataScienceHandbook/" },
+        { label: "Kaggle Python Course", url: "https://www.kaggle.com/learn/python" },
+      ],
+    },
+    "MA 161": {
+      "all":    [
+        { label: "MA 161 – Purdue Math Dept", url: "https://www.math.purdue.edu/academic/courses/MA161" },
+        { label: "Paul's Online Math Notes – Calc I", url: "https://tutorial.math.lamar.edu/Classes/CalcI/CalcI.aspx" },
+        { label: "Khan Academy – Calculus 1", url: "https://www.khanacademy.org/math/calculus-1" },
+      ],
+      "Exam 1": [
+        { label: "Limits & Continuity – Khan Academy", url: "https://www.khanacademy.org/math/calculus-1/cs1-limits-and-continuity" },
+        { label: "Limit Definition – Paul's Notes", url: "https://tutorial.math.lamar.edu/Classes/CalcI/LimitsIntro.aspx" },
+      ],
+      "Exam 2": [
+        { label: "Derivatives – Khan Academy", url: "https://www.khanacademy.org/math/calculus-1/cs1-derivatives-definition-and-basic-rules" },
+        { label: "Chain Rule Practice – Paul's Notes", url: "https://tutorial.math.lamar.edu/Classes/CalcI/ChainRule.aspx" },
+      ],
+      "Final": [
+        { label: "Integrals – Khan Academy", url: "https://www.khanacademy.org/math/calculus-1/cs1-integrals" },
+        { label: "Fundamental Theorem of Calculus", url: "https://tutorial.math.lamar.edu/Classes/CalcI/DefnOfDefiniteIntegral.aspx" },
+        { label: "Purdue MA 161 Exam Archive", url: "https://www.math.purdue.edu/academic/courses/MA161" },
+      ],
+    },
+    "MA 162": {
+      "all":    [
+        { label: "MA 162 – Purdue Math Dept", url: "https://www.math.purdue.edu/academic/courses/MA162" },
+        { label: "Paul's Online Math Notes – Calc II", url: "https://tutorial.math.lamar.edu/Classes/CalcII/CalcII.aspx" },
+        { label: "Khan Academy – Calculus 2", url: "https://www.khanacademy.org/math/calculus-2" },
+      ],
+      "Exam 1": [
+        { label: "Integration Techniques – Paul's Notes", url: "https://tutorial.math.lamar.edu/Classes/CalcII/IntegrationByParts.aspx" },
+        { label: "U-Substitution – Khan Academy", url: "https://www.khanacademy.org/math/calculus-2/cs2-integration-and-accumulation-of-change" },
+      ],
+      "Exam 2": [
+        { label: "Series & Sequences – Paul's Notes", url: "https://tutorial.math.lamar.edu/Classes/CalcII/Sequences.aspx" },
+        { label: "Convergence Tests – Khan Academy", url: "https://www.khanacademy.org/math/calculus-2/cs2-infinite-sequences-and-series" },
+      ],
+      "Final": [
+        { label: "Parametric Equations – Paul's Notes", url: "https://tutorial.math.lamar.edu/Classes/CalcII/ParametricEqn.aspx" },
+        { label: "Polar Coordinates – Khan Academy", url: "https://www.khanacademy.org/math/calculus-2/cs2-parametric-equations-polar-coordinates-and-vector-valued-functions" },
+        { label: "Purdue MA 162 Exam Archive", url: "https://www.math.purdue.edu/academic/courses/MA162" },
+      ],
+    },
+    "MA 261": {
+      "all":    [
+        { label: "MA 261 – Purdue Math Dept", url: "https://www.math.purdue.edu/academic/courses/MA261" },
+        { label: "Paul's Online Math Notes – Calc III", url: "https://tutorial.math.lamar.edu/Classes/CalcIII/CalcIII.aspx" },
+        { label: "Khan Academy – Multivariable Calc", url: "https://www.khanacademy.org/math/multivariable-calculus" },
+      ],
+      "Exam 1": [
+        { label: "Vectors & 3D Space – Paul's Notes", url: "https://tutorial.math.lamar.edu/Classes/CalcIII/3DSpace.aspx" },
+        { label: "Dot & Cross Product – Khan Academy", url: "https://www.khanacademy.org/math/multivariable-calculus/thinking-about-multivariable-function" },
+      ],
+      "Exam 2": [
+        { label: "Partial Derivatives – Paul's Notes", url: "https://tutorial.math.lamar.edu/Classes/CalcIII/PartialDerivatives.aspx" },
+        { label: "Gradient & Directional Derivatives", url: "https://www.khanacademy.org/math/multivariable-calculus/multivariable-derivatives" },
+      ],
+      "Final": [
+        { label: "Multiple Integrals – Paul's Notes", url: "https://tutorial.math.lamar.edu/Classes/CalcIII/MultipleIntegrals.aspx" },
+        { label: "Stokes' & Divergence Theorems", url: "https://www.khanacademy.org/math/multivariable-calculus/greens-theorem-and-stokes-theorem" },
+        { label: "Purdue MA 261 Exam Archive", url: "https://www.math.purdue.edu/academic/courses/MA261" },
+      ],
+    },
+    "PHY 172": {
+      "all":    [
+        { label: "PHY 172 – Purdue Physics Dept", url: "https://www.physics.purdue.edu/academic-programs/courses/course_detail.shtml?c=PHY172" },
+        { label: "HyperPhysics – Mechanics", url: "http://hyperphysics.phy-astr.gsu.edu/hbase/hframe.html" },
+        { label: "Khan Academy – Physics", url: "https://www.khanacademy.org/science/physics" },
+      ],
+      "Exam 1": [
+        { label: "Newton's Laws – Khan Academy", url: "https://www.khanacademy.org/science/physics/forces-newtons-laws" },
+        { label: "Momentum & Impulse – HyperPhysics", url: "http://hyperphysics.phy-astr.gsu.edu/hbase/mom.html" },
+      ],
+      "Exam 2": [
+        { label: "Energy & Work – Khan Academy", url: "https://www.khanacademy.org/science/physics/work-and-energy" },
+        { label: "Conservation of Energy – HyperPhysics", url: "http://hyperphysics.phy-astr.gsu.edu/hbase/conser.html" },
+      ],
+      "Exam 3": [
+        { label: "Rotational Motion – Khan Academy", url: "https://www.khanacademy.org/science/physics/torque-angular-momentum" },
+        { label: "Angular Momentum – HyperPhysics", url: "http://hyperphysics.phy-astr.gsu.edu/hbase/amom.html" },
+      ],
+      "Final": [
+        { label: "PHY 172 Full Review – Purdue Physics", url: "https://www.physics.purdue.edu/academic-programs/courses/course_detail.shtml?c=PHY172" },
+        { label: "Modern Mechanics – Matter & Interactions", url: "https://matterandinteractions.org/" },
+        { label: "Physics Formula Sheet – HyperPhysics", url: "http://hyperphysics.phy-astr.gsu.edu/hbase/hframe.html" },
+      ],
+    },
+  };
+
+  // All searchable entries: { label, course, exam }
+  const searchIndex = [];
+  Object.keys(courseData).forEach(course => {
+    searchIndex.push({ label: course, sublabel: courseData[course].exams.join(', '), course, exam: 'all' });
+    courseData[course].exams.forEach(exam => {
+      searchIndex.push({ label: course + ' — ' + exam, sublabel: 'Jump to ' + exam + ' cheatsheets', course, exam });
+    });
+  });
+
+  function handleCatalogSearch() {
+    const q = document.getElementById('catalog-search').value.trim().toLowerCase();
+    const dropdown = document.getElementById('search-dropdown');
+    const matches = q.length === 0
+      ? searchIndex
+      : searchIndex.filter(e => e.label.toLowerCase().includes(q) || e.sublabel.toLowerCase().includes(q));
+    if (matches.length === 0) { dropdown.style.display = 'none'; return; }
+    dropdown.innerHTML = matches.slice(0, 8).map((e, i) => `
+      <div onclick="selectSearchResult('${e.course}','${e.exam}')"
+           style="padding:10px 14px;cursor:pointer;border-bottom:1px solid #e8e8e8;font-family:var(--font-mono);"
+           onmouseenter="this.style.background='var(--surface)'"
+           onmouseleave="this.style.background='var(--bg)'">
+        <div style="font-size:12px;font-weight:600;">${e.label}</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">${e.sublabel}</div>
+      </div>`).join('');
+    dropdown.style.display = 'block';
+  }
+
+  function selectSearchResult(course, exam) {
+    document.getElementById('search-dropdown').style.display = 'none';
+    document.getElementById('catalog-search').value = exam === 'all' ? course : course + ' — ' + exam;
+    // Switch course if needed
+    if (course !== activeCourse) {
+      activeCourse = course;
+      document.getElementById('sheets-course-title').textContent = course;
+      const sel = document.getElementById('exam-filter');
+      sel.innerHTML = '<option value="all">All Exams</option>';
+      courseData[course].exams.forEach(e => {
+        const opt = document.createElement('option'); opt.value = e; opt.textContent = e; sel.appendChild(opt);
+      });
+    }
+    // Set exam filter
+    document.getElementById('exam-filter').value = exam;
+    renderSheets(course, exam);
+    showResourceLinks(course, exam);
+  }
+
+  function showResourceLinks(course, exam) {
+    const section = document.getElementById('resource-links-section');
+    const list = document.getElementById('resource-links-list');
+    const links = (resourceLinks[course] && (resourceLinks[course][exam] || resourceLinks[course]['all'])) || [];
+    if (links.length === 0) { section.style.display = 'none'; return; }
+    const examLinks = resourceLinks[course][exam] || [];
+    const allLinks  = resourceLinks[course]['all'] || [];
+    // Show exam-specific first, then general ones
+    const combined = [...examLinks, ...allLinks.filter(a => !examLinks.find(e => e.url === a.url))];
+    list.innerHTML = combined.map(l => `
+      <a href="${l.url}" target="_blank" rel="noopener"
+         style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:2px solid var(--border);border-radius:2px;text-decoration:none;color:var(--text);background:var(--bg);font-family:var(--font-mono);font-size:11px;gap:8px;transition:background 0.1s;"
+         onmouseenter="this.style.background='var(--surface)'"
+         onmouseleave="this.style.background='var(--bg)'">
+        <span style="flex:1;line-height:1.4;">${l.label}</span>
+        <span style="font-size:14px;flex-shrink:0;">↗</span>
+      </a>`).join('');
+    section.style.display = 'block';
+  }
+
+  // Also show resource links when exam filter changes
+  const origFilterSheets = filterSheets;
+  function filterSheets() {
+    const val = document.getElementById('exam-filter').value;
+    renderSheets(activeCourse, val);
+    if (activeCourse) showResourceLinks(activeCourse, val);
+  }
+  function toggleDark() {
+    dark = !dark;
+    document.getElementById('darkToggle').classList.toggle('on', dark);
+    if (dark) {
+      document.documentElement.style.setProperty('--bg', '#111');
+      document.documentElement.style.setProperty('--surface', '#1e1e1e');
+      document.documentElement.style.setProperty('--border', '#ffffff');
+      document.documentElement.style.setProperty('--text', '#ffffff');
+      document.documentElement.style.setProperty('--text-muted', '#888');
+    } else {
+      document.documentElement.style.setProperty('--bg', '#ffffff');
+      document.documentElement.style.setProperty('--surface', '#f5f5f5');
+      document.documentElement.style.setProperty('--border', '#111111');
+      document.documentElement.style.setProperty('--text', '#111111');
+      document.documentElement.style.setProperty('--text-muted', '#666666');
+    }
+  }
+</script>
+</body>
+</html>
